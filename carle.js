@@ -31,6 +31,9 @@ $(window).on('load', function () {
     answerContainer.text(`${today.make} ${today.model}`);
     answerContainer.css("visibility", "hidden");
 
+    makeButton.on('click', MakeClick);
+    modelButton.on('click', ModelClick);
+
     function MakeClick() {
         let text = makeTextBox.val();
 
