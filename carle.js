@@ -2,12 +2,6 @@ $(window).on('load', function () {
     const FINISHED_EMOJI = "🚗💪";
     const FAILURE_EMOJI = "👉🚲👈";
 
-    let makeGuesses = 4;
-    let modelGuesses = 4;
-
-    let makeCorrect = false;
-    let modelCorrect = false;
-
     let makeTextBox = $("#make-tb");
     let modelTextBox = $("#model-tb");
 
@@ -21,18 +15,39 @@ $(window).on('load', function () {
 
     let carImg = $("#car-img");
 
+    let gameState = {
+        make: {
+            guesses: 4,
+            button: makeButton,
+            guessContainer: makeGuessContainer,
+            correct: false,
+        },
+        model: {
+            guesses: 4,
+            button: modelButton,
+            guessContainer: modelGuessContainer,
+            correct: false,
+        }
+    }
+
     let today = {
-        make: "BUGATTI",
-        model: "EB112",
-        imgSource: "bugattieb112.png"
+        year: "1902",
+        make: "AUTOCAR",
+        model: "10 HP",
+        imgSource: "images/autocar10hp.png"
     }
 
     carImg.attr("src", today.imgSource);
-    answerContainer.text(`${today.make} ${today.model}`);
+    answerContainer.text(`${today.year} ${today.make} ${today.model}`);
     answerContainer.css("visibility", "hidden");
 
     makeButton.on('click', MakeClick);
     modelButton.on('click', ModelClick);
+
+    hintCheckbox.on('click', HintClick);
+
+    makeGuessContainer.append(InlayDiv(today.make.length));
+    modelGuessContainer.append(InlayDiv(today.model.length));
 
     function MakeClick() {
         let text = makeTextBox.val();
@@ -51,21 +66,11 @@ $(window).on('load', function () {
         if (upperCase === today.make) {
             makeGuessContainer.append(GenerateFinished());
             makeButton.attr("disabled", true);
-            makeCorrect = true;
+            gameState.makeCorrect = true;
         }
 
-        MakeGuessDecrement();
+        GuessDecrement(gameState.make);
         WinHandler();
-    }
-
-    function MakeGuessDecrement() {
-        if (makeGuesses-- === 0) {
-            makeButton.attr("disabled", true);
-            makeGuessContainer.append(GenerateFailure());
-            answerContainer.css("visibility", "visible");
-            return true;
-        }
-        return false;
     }
 
     function ModelClick() {
@@ -85,17 +90,17 @@ $(window).on('load', function () {
         if (upperCase === today.model) {
             modelGuessContainer.append(GenerateFinished());
             modelButton.attr("disabled", true);
-            modelCorrect = true;
+            gameState.modelCorrect = true;
         }
 
-        ModelGuessDecrement();
+        GuessDecrement(gameState.model);
         WinHandler();
     }
 
-    function ModelGuessDecrement() {
-        if (modelGuesses-- === 0) {
-            modelButton.attr("disabled", true);
-            modelGuessContainer.append(GenerateFailure());
+    function GuessDecrement(component) {
+        if (component.guesses-- === 0) {
+            component.button.attr("disabled", true);
+            component.guessContainer.append(GenerateFailure());
             answerContainer.css("visibility", "visible");
             return true;
         }
@@ -103,17 +108,21 @@ $(window).on('load', function () {
     }
 
     function WinHandler() {
-        if (makeCorrect && modelCorrect)
+        if (gameState.makeCorrect && gameState.modelCorrect)
             answerContainer.css("visibility", "visible");
     }
 
     function GenerateDivs(correct, normalizedInputArray) {
         let flexGuess = GenerateFlexGuess();
-        normalizedInputArray.forEach(letter => {
+
+        normalizedInputArray.forEach((letter, idx) => {
             let flexLetter;
             if (correct.includes(letter)) {
+                if (correct[0] === letter)
+                    flexLetter = GenerateFlexLetter(letter, "correct")
+                else
+                    flexLetter = GenerateFlexLetter(letter, "correct-unorder");
                 correct = correct.replace(letter, "");
-                flexLetter = GenerateFlexLetter(letter, "correct");
             }
             else {
                 flexLetter = GenerateFlexLetter(letter, "incorrect");
@@ -122,7 +131,7 @@ $(window).on('load', function () {
         });
         // letters left to be used.
         if (correct.length > 0)
-            flexGuess.append(GenerateFlexLetter("¿?", "curious"));
+            flexGuess.append(GenerateFlexLetter("❔", "curious"));
         return flexGuess;
     }
 

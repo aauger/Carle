@@ -24,7 +24,7 @@
         }
 
         .container {
-            max-width: 90%;
+            max-width: 600px;
         }
 
         .flex-container {
@@ -38,7 +38,7 @@
         #car-img-container {
             text-align: center;
             padding: 30px;
-            width: 50%;
+            width: 100%;
             background-color: whitesmoke;
             margin: 10px auto;
             border: 1px solid darkgray;
@@ -101,14 +101,19 @@
             border: 1px dotted lightgreen;
         }
 
+        .correct-unorder {
+            background-color: goldenrod;
+            border: 1px dotted lightgoldenrodyellow;
+        }
+
         .incorrect {
             background-color: firebrick;
             border: 1px dotted lightcoral;
         }
 
         .curious {
-            background-color: goldenrod;
-            border: 1px dotted lightgoldenrodyellow;
+            background-color: purple;
+            border: 1px dotted mediumpurple;
         }
     </style>
 </head>
@@ -125,9 +130,8 @@
         <div class="flex-container">
             <div id="make" class="flex-item">
                 <h2 class="header">Make</h2>
-                <div id="make-guess-container">
-
-                </div>
+                <div id="make-guess-container"></div>
+                <div class="flex-container"></div>
                 <input id="make-tb" class="guess-tb" type="text" />
                 <button class="guess-bt" id="make-btn" class="guess-tb">Guess</button>
             </div>
