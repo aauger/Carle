@@ -32,7 +32,7 @@ $(window).on('load', async function () {
 
     let today = await fetch('http://localhost:4567/car').then(res => res.json());
 
-    carImg.attr("src", `images/${today.image_src}`);
+    carImg.attr("src", `images/${today.filename}`);
     answerContainer.text(`${today.year} ${today.make} ${today.model}`);
     answerContainer.css("visibility", "hidden");
 

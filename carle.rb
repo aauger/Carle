@@ -1,5 +1,9 @@
 require "sinatra"
 require "json"
+require "sqlite3"
+require "./car.rb"
+
+DB = SQLite3::Database.new("car.db")
 
 set :public_folder, "public"
 
@@ -9,11 +13,6 @@ end
 
 get "/car" do
   content_type :json
-  car = {
-    year: "1902",
-    make: "AUTOCAR",
-    model: "10 HP",
-    image_src: "autocar10hp.png",
-  }.to_json()
-  car
+  car = db_car_to_table(random_car_from_db(DB))
+  car.to_json()
 end
