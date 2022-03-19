@@ -3,7 +3,7 @@ require "json"
 require "sqlite3"
 require "./car.rb"
 
-DB = SQLite3::Database.new("car.db")
+DB = SQLite3::Database.new("../car.db")
 
 set :public_folder, "public"
 
